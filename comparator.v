@@ -1,4 +1,4 @@
-module comp (clock,compstart,peout,peready,vectorx,vectory,bestdist,motionx, motiony);
+module comparator (clock,compstart,peout,peready,vectorx,vectory,bestdist,motionx, motiony);
 
 input clock;
 input compstart;
