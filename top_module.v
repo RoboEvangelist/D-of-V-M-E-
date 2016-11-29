@@ -1,8 +1,15 @@
 module top_module (clock,start,r,s1,s2,addressR,addresss1,addresss2,bestdist,
     motionx,motiony);
 
-//    input clock;
-//    input start;
+    reg clock;
+    reg start;
+    wire [7:0] addressR;
+    wire [9:0] addresss1, addresss2;
+    wire [7:0] bestdist;
+    wire [3:0] motionx,motiony;
+    reg [7:0] r;
+    reg [7:0] s1;
+    reg [7:0] s2;
 //    output [15:0] s1s2mux;
 //    output [15:0] newdist;
 //    output compstart;
