@@ -16,8 +16,8 @@ module processing_element (clock ,r , s1 ,s2 ,s1s2mux , newdist, accumulate, rpi
 
   input  s1s2mux;    // mux to select left, or right half pixels of search window
   input  newdist;    //control inputs
-  output [7:0] accumulate;
-  output [7:0] rpipe;
+  output [7:0] accumulate;   // output to the comparator
+  output [7:0] rpipe;        // output to the next processing element (d-flipflop output)
 
   reg [7:0]  rpipe,accumulate,accumulatein,difference;
   reg carry;
@@ -35,8 +35,9 @@ module processing_element (clock ,r , s1 ,s2 ,s1s2mux , newdist, accumulate, rpi
       if (difference < 0) difference = 0 - difference;
         // absolute subtraction
         {carry,accumulatein} = accumulate + difference;
-        if (carry == 1) accumulatein = 8'hFF;
+        if (carry == 1) accumulatein = 8'hFF;    // saturate
         if (newdist == 1) accumulatein = difference;
+    // start new Distortion calculation
     end
 endmodule
 
