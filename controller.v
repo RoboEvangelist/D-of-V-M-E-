@@ -1,6 +1,6 @@
 module control (clock,start,s1s2mux,newdist,compstart,peready,vectorx,vectory,addressR,addresss1,addresss2);
 input clock;
-input start;
+input start; // = 1 when working
 output [15:0] s1s2mux;
 output [15:0] newdist;
 output compstart;
