@@ -28,9 +28,9 @@ module processing_element (clock ,r , s1 ,s2 ,s1s2mux , newdist, accumulate, rpi
   always @(r or s1 or s2 or s1s2mux or newdist or accumulate)
     begin
       if (s1s2mux)
-        difference = (r - s1);
+        difference = (r - s1); // if multiplexer picks s1
       else
-        difference = (r - s2);
+        difference = (r - s2); // if multiplexer picks s2
 
       if (difference < 0) difference = 0 - difference;
         // absolute subtraction
