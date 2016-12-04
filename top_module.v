@@ -33,8 +33,10 @@ module top_module (clock,start,R,s1,s2,addressR,addresss1,addresss2,bestdist,
     output [7:0] R, Rpipe0, Rpipe1, Rpipe2, Rpipe3, Rpipe4, Rpipe5, Rpipe6, Rpipe7, Rpipe8, Rpipe9, Rpipe10, Rpipe11, Rpipe12;
     output [7:0] Rpipe13, Rpipe14;
     
+// Calling the comparator and control files    
 comparator c(.clock(clock), .compstart(compstart), .peout(peout), .peready(peready), .vectorx(vectorx), .vectory(vectory), .bestdist(bestdist), .motionx(motionx), .motiony(motiony));  
 control cnt(.clock(clock), .start(start), .s1s2mux(s1s2mux), .newdist(newdist), .compstart(compstart), .peready(peready), .vectorx(vectorx), .vectory(vectory), .addressR(addressR), .addresss1(addresss1), .addresss2(addresss2))     
+
 //  Below is how to call the pe modules
 pe pe0(.clock(clock), .R(R[7:0]), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[0]), .newDist(newDist[0]), .Accumulate(peout [7 : 0]) , .Rpipe(Rpipe0));
 pe pe1(.clock(clock), .R(Rpipe0), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[1]), .newDist(newDist[1]), .Accumulate(peout [15 : 8]) , .Rpipe(Rpipe1));  
