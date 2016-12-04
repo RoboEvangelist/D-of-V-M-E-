@@ -44,9 +44,6 @@ module top_module (clock,start,R,s1,s2,addressR,addresss1,addresss2,bestdist,
     reg [7:0] R, Rpipe0, Rpipe1, Rpipe2, Rpipe3, Rpipe4, Rpipe5, Rpipe6, Rpipe7, Rpipe8, Rpipe9, Rpipe10, Rpipe11, Rpipe12;
     reg [7:0] Rpipe13, Rpipe14;   
  
-    reg [7:0] s2;
-    reg [7:0] s2;
-    reg [7:0] s2;
     
 // Calling the comparator and control files    
 comparator c(.clock(clock), .compstart(compstart), .peout(peout), .peready(peready), .vectorx(vectorx), .vectory(vectory), .bestdist(bestdist), .motionx(motionx), .motiony(motiony));  
