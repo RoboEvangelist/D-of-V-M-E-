@@ -49,7 +49,7 @@ always @(best_dist or pe_out or pe_ready)
      *  processing has not started yet.
      */
     if ((|pe_ready == 0) || (comp_start == 0)) new_best = 0;
-    else if (new_dist < best_dist) 
+    else if (new_dist < best_dist)  // check if newly found distortion is better (smaller) than current best distortion
       new_best = 1;
     else 
       new_best = 0;
