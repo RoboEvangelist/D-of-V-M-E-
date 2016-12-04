@@ -4,66 +4,57 @@
 //   Below, is the way you would call the 1st 2 of 16 of the pe modules.  
 //   That's it.  Of course, this only works if the other modules are working.
 
-module top_module (clock, start, r, s1, s2, address_r, address_s1, address_s2, best_dist,
-    motion_x, motion_y);
+`include "processing_element.v"
+`include "controller.v"
+`include "comparator.v"
 
-    input clock;
-    input [7:0] r, s1, s2;  // memory inputs
-    input compstart;
-    input [127:0] peout;
-    input [15:0] peready;
-    input [3:0] vectorx, vectory
-    output [7:0] best_dist;
-    output [3:0] motion_x, motion_y;
-    
-    input s1s2mux, newDist; // control inputs
-    output [7:0] Accumulate, Rpipe;
-    output [127:0] peout;
-    output [7:0] r, Rpipe0, Rpipe1, Rpipe2, Rpipe3, Rpipe4, Rpipe5, Rpipe6, Rpipe7, Rpipe8, Rpipe9, Rpipe10, Rpipe11, Rpipe12;
-    output [7:0] Rpipe13, Rpipe14;    
-    
-    reg clock;
-    reg start;
-    wire [7:0] address_r;
-    wire [9:0] address_s1, address_s2;
-    wire [7:0] best_dist;
-    wire [3:0] motion_x,motion_y;
-    reg [7:0] r;
-    reg [7:0] s1;
-    reg [7:0] s2;
-    
-    reg[7:0] best_dist, newdist;
-    reg[3:0] motion_x, motion_y;
-    reg newBest;
-    
-    reg [15:0] s1s2mux;
-    reg [15:0] newDist;
-    reg [127:0] peout;
-    reg [7:0] r, Rpipe0, Rpipe1, Rpipe2, Rpipe3, Rpipe4, Rpipe5, Rpipe6, Rpipe7, Rpipe8, Rpipe9, Rpipe10, Rpipe11, Rpipe12;
-    reg [7:0] Rpipe13, Rpipe14;   
+module top_module (clock, start, r, s1, s2, address_r, address_s1, address_s2,
+   best_dist, motion_x, motion_y);
+
+input clock, start;
+input [7:0] r;
+input [7:0] s1, s2;
+output [7:0] best_dist, address_r;
+output [3:0] motion_x, motion_y;
+output [9:0] address_s1, address_s2;
+wire comp_start;
+wire [127:0] pe_out;
+// We have 16 (one per Processing Element) multiplexers, new distortion models,
+// "processing element ready" flags
+wire [15:0] s1s2_mux, new_dist, pe_ready;
+wire [9:0] address_s1, address_s2;
+wire [7:0] best_dist, address_r;
+wire [3:0] vector_x, vector_y;
+// wires for all Reference Blocks
+wire [7:0] r, Rpipe0, Rpipe1, Rpipe2, Rpipe3, Rpipe4, Rpipe5, Rpipe6, Rpipe7, Rpipe8, Rpipe9, Rpipe10, Rpipe11, Rpipe12;
+wire [7:0] Rpipe13, Rpipe14;   
  
-    
-// Calling the comparator and control files    
-comparator c(.clock(clock), .compstart(compstart), .peout(peout), .peready(peready), .vectorx(vectorx), .vectory(vectory), .best_dist(best_dist), .motion_x(motion_x), .motion_y(motion_y));  
-control cnt(.clock(clock), .start(start), .s1s2mux(s1s2mux), .newdist(newdist), .compstart(compstart), .peready(peready), .vectorx(vectorx), .vectory(vectory), .address_r(address_r), .address_s1(address_s1), .address_s2(address_s2))     
+// Calling the comparator and controller files    
+comparator comparador(.clock(clock), .comp_start(comp_start), .pe_out(pe_out),
+   .pe_ready(pe_ready), .vector_x(vector_x), .vector_y(vector_y),
+   .best_dist(best_dist), .motion_x(motion_x), .motion_y(motion_y));
+   
+controller controlador(.clock(clock), .start(start), .s1s2_mux(s1s2_mux),
+   .new_dist(new_dist), .comp_start(comp_start), .pe_ready(pe_ready),
+   .vector_x(vector_x), .vector_y(vector_y), .address_r(address_r),
+   .address_s1(address_s1), .address_s2(address_s2));   
 
 //  Below is how to call the pe modules
-pe pe0(.clock(clock), .r(r[7:0]), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[0]), .newDist(newDist[0]), .Accumulate(peout [7 : 0]) , .Rpipe(Rpipe0));
-pe pe1(.clock(clock), .r(Rpipe0), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[1]), .newDist(newDist[1]), .Accumulate(peout [15 : 8]) , .Rpipe(Rpipe1));  
-pe pe2(.clock(clock), .r(Rpipe1), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[2]), .newDist(newDist[2]), .Accumulate(peout [23 : 16]) , .Rpipe(Rpipe2));  
-pe pe3(.clock(clock), .r(Rpipe2), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[3]), .newDist(newDist[3]), .Accumulate(peout [31 : 24]) , .Rpipe(Rpipe3));    
-pe pe4(.clock(clock), .r(Rpipe3), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[4]), .newDist(newDist[4]), .Accumulate(peout [39 : 32]) , .Rpipe(Rpipe4));  
-pe pe5(.clock(clock), .r(Rpipe4), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[5]), .newDist(newDist[5]), .Accumulate(peout [47 : 40]) , .Rpipe(Rpipe5));  
-pe pe6(.clock(clock), .r(Rpipe5), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[6]), .newDist(newDist[6]), .Accumulate(peout [55 : 48]) , .Rpipe(Rpipe6));       
-pe pe7(.clock(clock), .r(Rpipe6), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[7]), .newDist(newDist[7]), .Accumulate(peout [63 : 56]) , .Rpipe(Rpipe7));  
-pe pe8(.clock(clock), .r(Rpipe7), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[8]), .newDist(newDist[8]), .Accumulate(peout [71 : 64]) , .Rpipe(Rpipe8));  
-pe pe9(.clock(clock), .r(Rpipe8), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[9]), .newDist(newDist[9]), .Accumulate(peout [79 : 72]) , .Rpipe(Rpipe9));    
-pe pe10(.clock(clock), .r(Rpipe9), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[10]), .newDist(newDist[10]), .Accumulate(peout [87 : 80]) , .Rpipe(Rpipe10));  
-pe pe11(.clock(clock), .r(Rpipe10), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[11]), .newDist(newDist[11]), .Accumulate(peout [95 : 88]) , .Rpipe(Rpipe11));  
-pe pe12(.clock(clock), .r(Rpipe11), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[12), .newDist(newDist[12]), .Accumulate(peout [103 : 96]) , .Rpipe(Rpipe12));        
-pe pe13(.clock(clock), .r(Rpipe12), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[13]), .newDist(newDist[13]), .Accumulate(peout [111 : 104]) , .Rpipe(Rpipe13));  
-pe pe14(.clock(clock), .r(Rpipe13), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[14]), .newDist(newDist[14]), .Accumulate(peout [119 : 112]) , .Rpipe(Rpipe14));  
-pe pe15(.clock(clock), .r(Rpipe14), .s1(s1[7:0]), .s2(s2[7:0]), .s1s2mux(s1s2mux[15]), .newDist(newDist[15]), .Accumulate(peout [127 : 120]) , .Rpipe(Rpipe15));  
+processing_element pe0(.clock(clock), .r(r), .s1(s1), .s2(s2), .s1s2_mux(s1s2_mux[0]), .new_dist(new_dist[0]), .accumulate(pe_out [7 : 0]) , .Rpipe(Rpipe0));
+processing_element pe1(.clock(clock), .r(Rpipe0), .s1(s1), .s2(s2), .s1s2_mux(s1s2_mux[1]), .new_dist(new_dist[1]), .accumulate(pe_out [15 : 8]) , .Rpipe(Rpipe1));  
+processing_element pe2(.clock(clock), .r(Rpipe1), .s1(s1), .s2(s2), .s1s2_mux(s1s2_mux[2]), .new_dist(new_dist[2]), .accumulate(pe_out [23 : 16]) , .Rpipe(Rpipe2));  
+processing_element pe3(.clock(clock), .r(Rpipe2), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[3]), .new_dist(new_dist[3]), .accumulate(pe_out [31 : 24]) , .Rpipe(Rpipe3));    
+processing_element pe4(.clock(clock), .r(Rpipe3), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[4]), .new_dist(new_dist[4]), .accumulate(pe_out [39 : 32]) , .Rpipe(Rpipe4));  
+processing_element pe5(.clock(clock), .r(Rpipe4), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[5]), .new_dist(new_dist[5]), .accumulate(pe_out [47 : 40]) , .Rpipe(Rpipe5));  
+processing_element pe6(.clock(clock), .r(Rpipe5), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[6]), .new_dist(new_dist[6]), .accumulate(pe_out [55 : 48]) , .Rpipe(Rpipe6));       
+processing_element pe7(.clock(clock), .r(Rpipe6), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[7]), .new_dist(new_dist[7]), .accumulate(pe_out [63 : 56]) , .Rpipe(Rpipe7));  
+processing_element pe8(.clock(clock), .r(Rpipe7), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[8]), .new_dist(new_dist[8]), .accumulate(pe_out [71 : 64]) , .Rpipe(Rpipe8));  
+processing_element pe9(.clock(clock), .r(Rpipe8), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[9]), .new_dist(new_dist[9]), .accumulate(pe_out [79 : 72]) , .Rpipe(Rpipe9));    
+processing_element pe10(.clock(clock), .r(Rpipe9), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[10]), .new_dist(new_dist[10]), .accumulate(pe_out [87 : 80]) , .Rpipe(Rpipe10));  
+processing_element pe11(.clock(clock), .r(Rpipe10), .s1(s1]), .s2(s2]), .s1s2_mux(s1s2_mux[11]), .new_dist(new_dist[11]), .accumulate(pe_out [95 : 88]) , .Rpipe(Rpipe11));  
+processing_element pe12(.clock(clock), .r(Rpipe11), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[12), .new_dist(new_dist[12]), .accumulate(pe_out [103 : 96]) , .Rpipe(Rpipe12));        
+processing_element pe13(.clock(clock), .r(Rpipe12), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[13]), .new_dist(new_dist[13]), .accumulate(pe_out [111 : 104]) , .Rpipe(Rpipe13));  
+processing_element pe14(.clock(clock), .r(Rpipe13), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[14]), .new_dist(new_dist[14]), .accumulate(pe_out [119 : 112]) , .Rpipe(Rpipe14));  
+processing_element pe15(.clock(clock), .r(Rpipe14), .s1(s1]), .s2(s2), .s1s2_mux(s1s2_mux[15]), .new_dist(new_dist[15]), .accumulate(pe_out [127 : 120]) , .Rpipe(Rpipe15));  
     
- 
 endmodule
