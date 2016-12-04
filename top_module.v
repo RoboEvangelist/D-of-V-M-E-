@@ -9,6 +9,21 @@
 module top_module (clock,start,R,s1,s2,addressR,addresss1,addresss2,bestdist,
     motionx,motiony);
 
+    input clock;
+    input [7:0] R, s1, s2;  // memory inputs
+    input compstart;
+    input [127:0] peout;
+    input [15:0] peready;
+    input [3:0] vectorx, vectory
+    output [7:0] BestDist;
+    output [3:0] motionx, motiony;
+    
+    input s1s2mux, newDist; // control inputs
+    output [7:0] Accumulate, Rpipe;
+    output [127:0] peout;
+    output [7:0] R, Rpipe0, Rpipe1, Rpipe2, Rpipe3, Rpipe4, Rpipe5, Rpipe6, Rpipe7, Rpipe8, Rpipe9, Rpipe10, Rpipe11, Rpipe12;
+    output [7:0] Rpipe13, Rpipe14;    
+    
     reg clock;
     reg start;
     wire [7:0] addressR;
@@ -19,6 +34,10 @@ module top_module (clock,start,R,s1,s2,addressR,addresss1,addresss2,bestdist,
     reg [7:0] s1;
     reg [7:0] s2;
     
+    reg[7:0] bestdist, newdist;
+    reg[3:0] motionx, motiony;
+    reg newBest;
+    
     reg [15:0] s1s2mux;
     reg [15:0] newDist;
     reg [127:0] peout;
@@ -28,10 +47,6 @@ module top_module (clock,start,R,s1,s2,addressR,addresss1,addresss2,bestdist,
     reg [7:0] s2;
     reg [7:0] s2;
     reg [7:0] s2;
-    
-    output [127:0] peout;
-    output [7:0] R, Rpipe0, Rpipe1, Rpipe2, Rpipe3, Rpipe4, Rpipe5, Rpipe6, Rpipe7, Rpipe8, Rpipe9, Rpipe10, Rpipe11, Rpipe12;
-    output [7:0] Rpipe13, Rpipe14;
     
 // Calling the comparator and control files    
 comparator c(.clock(clock), .compstart(compstart), .peout(peout), .peready(peready), .vectorx(vectorx), .vectory(vectory), .bestdist(bestdist), .motionx(motionx), .motiony(motiony));  
