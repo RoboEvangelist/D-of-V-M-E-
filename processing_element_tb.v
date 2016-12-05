@@ -1,7 +1,7 @@
 /** Processing Element Test Bench
  */
 
-module pe_tb();
+module proccessing_element_tb();
 reg clock;
 reg [7:0] r;
 reg [7:0] s1;
@@ -10,7 +10,9 @@ reg s1s2_mux, new_dist;
 wire carry, difference;
 wire [7:0] accumulate, r_pipe;
 reg [7:0] accumulate, r_pipe;
-proccessing_element u ( .clock(clock), .r(r), .s1(s1), .s2(s2), .s1s2_mux(s1s2_mux), .new_dist(new_dist), .accumulate(accumulate), .r_pipe(r_pipe));
+proccessing_element u (.clock(clock), .r(r), .s1(s1), .s2(s2),
+   .s1s2_mux(s1s2_mux), .new_dist(new_dist),
+   .accumulate(accumulate), .r_pipe(r_pipe));
 always #5 clock = ~clock;
 initial
    begin
