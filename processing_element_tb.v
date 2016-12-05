@@ -67,8 +67,8 @@ initial
    end
 // This is to create a dump file for offline viewing.
 initial
-begin
-   $dumpfile ("proccessing_element_tb.dump");
-   $dumpvars (0, proccessing_element_tb);
-end // initial begin
+   begin
+      $dumpfile ("proccessing_element_tb.dump");
+      $dumpvars (0, proccessing_element_tb);
+   end // initial begin
 endmodule
