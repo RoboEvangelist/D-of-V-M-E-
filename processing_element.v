@@ -3,9 +3,9 @@
  *  to perform fast, parallel search.
  */
 
-module processing_element (clock ,r , s1 ,s2 ,s1s2_mux , new_dist,
-   accumulate, r_pipe);
-  
+module processing_element (clock , r , s1 ,s2
+   ,s1s2_mux , new_dist, accumulate, r_pipe);
+
   input clock;
   /** Architecture consist of three small memories
    *  One for the reference block data (r)
