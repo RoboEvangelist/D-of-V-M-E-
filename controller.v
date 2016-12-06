@@ -1,4 +1,4 @@
-module control (clock, start, s1s2_mux, new_dist, comp_start,
+module controller (clock, start, s1s2_mux, new_dist, comp_start,
    pe_ready, vector_x, vector_y, address_r, address_s1, address_s2);
 
 input clock;
