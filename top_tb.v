@@ -34,10 +34,10 @@ end
 initial 
    begin
       // First setup up to monitor all inputs and outputs
-      $monitor ("time=%5d ns, clock=%b, r=%b, s1=%b, s2=%b, start=%b, address_r=%b, address_s1=%b, address_s2=%b, best_dist=%b, motion_x=%b, motion_y=%b, rmem=%b, smem=%b, i=%d, j=%d",
+      $monitor ("time=%5d ns, clock=%b, r=%b, s1=%b, s2=%b, start=%b, address_r=%b, address_s1=%b, address_s2=%b, best_dist=%b, motion_x=%b, motion_y=%b, i=%d, j=%d",
          $time, clock, r[7:0], s1[7:0], s2[7:0], start, address_r[7:0], address_s1[9:0],
          address_s2[9:0], best_dist[7:0], motion_x[3:0], 
-         motion_y[3:0], rmem[7:0][255:0], smem[9:0][960:0], i, j);
+         motion_y[3:0], i, j);
       // below commands save waves as vcd files. 
       // These are not needed if Modelsim used as the 
       // simulator
