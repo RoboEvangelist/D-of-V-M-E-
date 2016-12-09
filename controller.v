@@ -23,9 +23,8 @@ reg [11:0] temp;
 integer i;
 
 always @(posedge clock)
-
-if (completed == 0) count <= count + 1'b1;
-else if (start == 0 ) count <= 12'b0;
+   if (completed == 0) count <= count + 1'b1;
+   else if (start == 0 ) count <= 12'b0;
 
 always @(count)
    begin
@@ -46,5 +45,5 @@ always @(count)
       vector_x = count[3:0] - 8;
       vector_y = count[11:8] - 9;
       completed = (count[11:0] == (16 * 257) - 1);
-end
+   end
 endmodule
